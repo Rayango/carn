@@ -1,0 +1,25 @@
+{
+  "name": "hrsf86-thesis",
+  "version": "1.0.0",
+  "description": "System Design Capstone",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Rayango/hrsf86-thesis.git"
+  },
+  "author": "Ryan Ngo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Rayango/hrsf86-thesis/issues"
+  },
+  "homepage": "https://github.com/Rayango/hrsf86-thesis#readme",
+  "dependencies": {
+    "cassandra-driver": "^3.3.0",
+    "faker": "^4.1.0",
+    "koa": "^2.4.1",
+    "nodemon": "^1.14.11"
+  }
+}
