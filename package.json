@@ -19,7 +19,9 @@
   "dependencies": {
     "cassandra-driver": "^3.3.0",
     "faker": "^4.1.0",
+    "fs": "0.0.1-security",
     "koa": "^2.4.1",
+    "koa-router": "^7.3.0",
     "nodemon": "^1.14.11"
   }
 }
