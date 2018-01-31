@@ -4,7 +4,8 @@
   "description": "System Design Capstone",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon server/index.js"
+    "start": "nodemon server/index.js",
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
@@ -23,5 +24,10 @@
     "koa": "^2.4.1",
     "koa-router": "^7.3.0",
     "nodemon": "^1.14.11"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.0.0",
+    "supertest": "^3.0.0"
   }
 }
