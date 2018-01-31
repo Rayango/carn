@@ -22,7 +22,7 @@ router
       if (error) {
         console.log(error);
       } else {
-        console.log('result...', result);
+        console.log('all views retrieved!');
       }
     });
   })
@@ -31,9 +31,12 @@ router
       if (error) {
         console.log(error);
       } else {
-        console.log('result...', result);
+        console.log('request has been added to DB!');
       }
     });
+  })
+  .get('/dataForFares', async (ctx, next) => {
+    
   });
 
 app

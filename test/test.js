@@ -17,11 +17,12 @@ describe('server', function() {
     request
       .post('/requests')
       .send({
-        id: uuid(),
-        rate: 2.55, 
-        zip: 55305,
-        time: 'Tue Jan 30 2018 09:03:51 GMT-0800 (PST)', 
-        price: 6.35
+        rate: 2.65, 
+        zipOrigin: 94105,
+        zipDestination: 94122,
+        time: new Date(new Date() - (Math.random() * 8.64e7)), 
+        price: 6.85,
+        ride: true
       })
       .end((err, res) => {
         done();
