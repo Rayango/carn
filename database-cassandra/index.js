@@ -10,12 +10,15 @@ module.exports = {
       .catch(error => callback(error, null));
   },
   addRequest: (request, callback) => {
-    let id = uuid();
+    // let id = uuid();
     let table = request.ride ? 'rides' : 'views';
-    let query = `INSERT INTO ${table} (id, rate, zipOrigin, zipDestination, time, price) VALUES (?, ?, ?, ?, ?, ?)`;
-    let params = [id, request.rate, request.zipOrigin, request.zipDestination, request.time, request.price];
+    let query = `INSERT INTO ${table} (id, rate, zipOrigin, zipDestination, time_stamp, price) VALUES (?, ?, ?, ?, ?, ?)`;
+    let params = [request.id, request.rate, request.zipOrigin, request.zipDestination, request.timestamp, request.price];
     client.execute(query, params, {prepare: true})
       .then(result => callback(null, result))
       .catch(error => console.log(error, null));
+  },
+  lookupRequest: (uuid, table, callback) => {
+    let query = `SELECT * FROM `;
   }
 };

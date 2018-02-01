@@ -1,3 +1,4 @@
+require('newrelic');
 const Koa = require('koa');
 const Router = require('koa-router');
 const fs = require('fs');
@@ -15,7 +16,9 @@ port = (typeof port === "number") ? port : 3000;
 
 router
   .get('/', (ctx, next) => {
-    ctx.body = 'Hello Koa!';
+    ctx.body = {
+      data: 'Hello Koa!'
+    }; 
   })
   .get('/requests', async (ctx, next) => {
     db.getAllViews((error, result) => {
@@ -31,12 +34,15 @@ router
       if (error) {
         console.log(error);
       } else {
+        ctx.body = {
+          data: 'request has been added to DB!'
+        };
         console.log('request has been added to DB!');
       }
     });
   })
   .get('/dataForFares', async (ctx, next) => {
-    
+
   });
 
 app

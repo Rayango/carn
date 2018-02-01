@@ -1,16 +1,20 @@
+DROP KEYSPACE IF EXISTS events;
+
 CREATE KEYSPACE events WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor' : 1};
 
 USE events;
 
+-- // step 4 2 ms with 1M
 CREATE TABLE views (
   id uuid,
   rate decimal,
   price decimal,
   zipOrigin int,
   zipDestination int,
-  time text,
-  PRIMARY KEY (id)
+  time_stamp text,
+  PRIMARY KEY (zipOrigin, rate, time_stamp)
 );
+
 
 CREATE TABLE rides (
   id uuid,
@@ -18,12 +22,76 @@ CREATE TABLE rides (
   price decimal,
   zipOrigin int,
   zipDestination int,
-  time text,
-  PRIMARY KEY (id)
+  time_stamp text,
+  PRIMARY KEY (zipOrigin, rate, time_stamp)
 );
 
--- COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData1.txt' with delimiter = ',';
--- COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData2.txt' with delimiter = ',';
--- COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData3.txt' with delimiter = ',';
--- COPY views from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData4.txt' with delimiter = ',';
--- COPY views from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData5.txt' with delimiter = ',';
+-- -- // step 3 2206 ms
+-- CREATE TABLE views (
+--   id uuid,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY ((time_stamp, zipOrigin), rate)
+-- );
+
+-- CREATE TABLE rides (
+--   id uuid,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY ((time_stamp, zipOrigin), rate)
+-- );
+
+-- -- // step 2 957 ms
+-- CREATE TABLE views (
+--   id uuid,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY (time_stamp, zipOrigin, rate)
+-- );
+
+-- CREATE TABLE rides (
+--   id uuid,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY (time_stamp, zipOrigin, rate)
+-- );
+
+-- // step 1 read error
+-- CREATE TABLE views (
+--   id uuid,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   timestamp text,
+--   PRIMARY KEY (id)
+-- );
+
+-- CREATE TABLE rides (
+--   id uuid,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   timestamp text,
+--   PRIMARY KEY (id)
+-- );
+
+COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData1.txt' with delimiter = ',';
+COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData2.txt' with delimiter = ',';
+COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData3.txt' with delimiter = ',';
+COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData4.txt' with delimiter = ',';
+COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData5.txt' with delimiter = ',';
+-- COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData7.txt' with delimiter = ',';
