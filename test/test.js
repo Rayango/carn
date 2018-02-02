@@ -33,7 +33,7 @@ describe('server', function() {
       .post('/requests')
       .send(data)
       .end((err, res) => {
-        db.lookupRequest(data.id, data.ride ? 'rides' : 'views', (error, result) => {
+        db.lookupRequest(data, data.ride ? 'rides' : 'views', (error, result) => {
           if (error) {
             console.log(error);
           } else {

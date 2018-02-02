@@ -16,9 +16,12 @@ module.exports = {
     let params = [request.id, request.rate, request.zipOrigin, request.zipDestination, request.timestamp, request.price];
     client.execute(query, params, {prepare: true})
       .then(result => callback(null, result))
-      .catch(error => console.log(error, null));
+      .catch(error => callback(error, null));
   },
-  lookupRequest: (uuid, table, callback) => {
-    let query = `SELECT * FROM `;
+  lookupRequest: (zipOrigin, uuid, table, callback) => {
+    let query = `SELECT * FROM ${table} WHERE zipOrigin = ${zipOrigin} AND id = ${uuid}`;
+    client.execute(query, {prepare: true})
+      .then(result => callback(null, result))
+      .catch(error => callback(error, null));
   }
 };

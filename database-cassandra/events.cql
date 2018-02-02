@@ -4,7 +4,7 @@ CREATE KEYSPACE events WITH REPLICATION = {'class': 'SimpleStrategy', 'replicati
 
 USE events;
 
--- // step 4 2 ms with 1M
+-- // step 7 8 ms with 10M
 CREATE TABLE views (
   id uuid,
   rate decimal,
@@ -12,7 +12,7 @@ CREATE TABLE views (
   zipOrigin int,
   zipDestination int,
   time_stamp text,
-  PRIMARY KEY (zipOrigin, rate, time_stamp)
+  PRIMARY KEY (zipOrigin, time_stamp, id)
 );
 
 
@@ -23,10 +23,76 @@ CREATE TABLE rides (
   zipOrigin int,
   zipDestination int,
   time_stamp text,
-  PRIMARY KEY (zipOrigin, rate, time_stamp)
+  PRIMARY KEY (zipOrigin, time_stamp, id)
 );
 
--- -- // step 3 2206 ms
+-- -- // step 6 15 ms with 10M
+-- CREATE TABLE views (
+--   id uuid,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY (zipOrigin, time_stamp, rate)
+-- );
+
+
+-- CREATE TABLE rides (
+--   id uuid,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY (zipOrigin, time_stamp, rate)
+-- );
+
+-- -- // step 5 1200 ms with 10M
+-- CREATE TABLE views (
+--   id uuid,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY (zipOrigin, rate, time_stamp)
+-- );
+
+
+-- CREATE TABLE rides (
+--   id uuid,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY (zipOrigin, rate, time_stamp)
+-- );
+
+-- -- // step 4 2 ms with 1M
+-- CREATE TABLE views (
+--   id uuid,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY (zipOrigin, time_stamp, rate)
+-- );
+
+
+-- CREATE TABLE rides (
+--   id uuid,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY (zipOrigin, time_stamp, rate)
+-- );
+
+-- -- // step 3 2206 ms with 1 M
 -- CREATE TABLE views (
 --   id uuid,
 --   rate decimal,
@@ -47,7 +113,7 @@ CREATE TABLE rides (
 --   PRIMARY KEY ((time_stamp, zipOrigin), rate)
 -- );
 
--- -- // step 2 957 ms
+-- -- // step 2 957 ms with 1 M
 -- CREATE TABLE views (
 --   id uuid,
 --   rate decimal,
@@ -94,4 +160,4 @@ COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData
 COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData3.txt' with delimiter = ',';
 COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData4.txt' with delimiter = ',';
 COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData5.txt' with delimiter = ',';
--- COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData7.txt' with delimiter = ',';
+COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData7.txt' with delimiter = ',';
