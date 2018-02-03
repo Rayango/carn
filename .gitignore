@@ -37,3 +37,21 @@ dist/
 # see https://npmjs.org/doc/faq.html#Should-I-check-my-node_modules-folder-into-git
 node_modules/
 bower_components/
+
+newrelic.js
+artilleryFakeDataGenerator.js
+fakeData1.txt
+fakeData2.txt
+fakeData3.txt
+fakeData4.txt
+fakeData5.txt
+fakeData6.txt
+fakeData7.txt
+fakeData8.txt
+fakeData9.txt
+fakeData10.txt
+fakeData11.txt
+fakeDataGenerator.js
+sfZipCodes.js
+usZipCodes.js
+testing.yml
