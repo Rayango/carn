@@ -6,13 +6,25 @@ const bodyParser = require('koa-body');
 const generateFakeData = require('../fakeData/fakeDataGenerator.js');
 const db = require('../database-cassandra/index.js');
 
+
 const app = new Koa();
 const router = new Router();
 
 var port = process.env.PORT || (process.argv[2] || 3000);
 port = (typeof port === "number") ? port : 3000;
 
-// app.use(bodyParser());
+app
+  .use(async (ctx, next) => {
+    try {
+      await next();
+    } catch (err) {
+      ctx.status = err.status || 500;
+      ctx.body = err.message;
+      ctx.app.emit('error', err, ctx);
+    }
+  })
+  .use(router.routes())
+  .use(router.allowedMethods());
 
 router
   .get('/', (ctx, next) => {
@@ -20,34 +32,29 @@ router
       data: 'Hello Koa!'
     }; 
   })
-  .get('/requests', async (ctx, next) => {
-    db.getAllViews((error, result) => {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('all views retrieved!');
-      }
-    });
-  })
   .post('/requests', bodyParser(), async (ctx, next) => {
-    db.addRequest(ctx.request.body, (error, result) => {
-      if (error) {
-        console.log(error);
-      } else {
-        ctx.body = {
-          data: 'request has been added to DB!'
-        };
-        console.log('request has been added to DB!');
-      }
-    });
+    const dbResponse = await db.addRequest(ctx.request.body);
+    ctx.body = {
+      data: 'request has been added to DB!'
+    };
+    // db.addRequest(ctx.request.body, (error, result) => {
+    //   if (error) {
+    //     console.log(error);
+    //   } else {
+    //     ctx.body = {
+    //       data: 'request has been added to DB!'
+    //     };
+    //     console.log('request has been added to DB!');
+    //   }
+    // });
   })
   .get('/dataForFares', async (ctx, next) => {
-
+    const historicalFareData = await db.getZipCodeData();
+    console.log('historicalFareData....', historicalFareData);
+    ctx.body = {
+      data: historicalFareData
+    };
   });
-
-app
-  .use(router.routes())
-  .use(router.allowedMethods());
 
 // var server = app.listen(port);
 

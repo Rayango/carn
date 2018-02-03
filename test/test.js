@@ -24,7 +24,7 @@ describe('server', function() {
       rate: 2.65, 
       zipOrigin: 94105,
       zipDestination: 94122,
-      timestamp: new Date(new Date() - (Math.random() * 8.64e7)), 
+      timestamp: new Date(new Date() - (Math.random() * 8.64e7)).toISOString().split('.')[0]+"-0800",
       price: 6.85,
       ride: false
     };
@@ -37,10 +37,21 @@ describe('server', function() {
           if (error) {
             console.log(error);
           } else {
+            console.log('result...', result);
             assert.equal(result.columns.length, 1);
           }
         });
         done();
       });  
+  });
+
+  it('should return aggregated data when dataForFares endpoint is visited', function(done) {
+    request
+      .get('/dataForFares')
+      .end((err, res) => {
+        console.log('data...', res.body.data);
+        assert.equal(res.body.data, 'Hello Koa!');
+        done();
+      });
   });
 });

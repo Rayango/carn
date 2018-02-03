@@ -4,27 +4,75 @@ CREATE KEYSPACE events WITH REPLICATION = {'class': 'SimpleStrategy', 'replicati
 
 USE events;
 
--- // step 7 8 ms with 10M
+-- // step 9 71 ms with 10M to select all entries for a given minute
 CREATE TABLE views (
   id uuid,
+  timeBucket text,
   rate decimal,
   price decimal,
   zipOrigin int,
   zipDestination int,
   time_stamp text,
-  PRIMARY KEY (zipOrigin, time_stamp, id)
+  PRIMARY KEY (timeBucket, time_stamp, zipOrigin, rate, id)
 );
 
 
 CREATE TABLE rides (
   id uuid,
+  timeBucket text,
   rate decimal,
   price decimal,
   zipOrigin int,
   zipDestination int,
   time_stamp text,
-  PRIMARY KEY (zipOrigin, time_stamp, id)
+  PRIMARY KEY (timeBucket, time_stamp, zipOrigin, rate, id)
 );
+
+-- -- // step 8 135 ms with 10M to select all entries for a given minute
+-- CREATE TABLE views (
+--   id uuid,
+--   timeBucket text,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY (timeBucket, zipOrigin, rate, id)
+-- );
+
+
+-- CREATE TABLE rides (
+--   id uuid,
+--   timeBucket text,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY (timeBucket, zipOrigin, rate, id)
+-- );
+
+-- -- // step 7 8 ms with 10M to query by a zipcode for a given minute
+-- CREATE TABLE views (
+--   id uuid,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY (zipOrigin, time_stamp, id)
+-- );
+
+
+-- CREATE TABLE rides (
+--   id uuid,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY (zipOrigin, time_stamp, id)
+-- );
 
 -- -- // step 6 15 ms with 10M
 -- CREATE TABLE views (
@@ -160,4 +208,8 @@ COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData
 COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData3.txt' with delimiter = ',';
 COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData4.txt' with delimiter = ',';
 COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData5.txt' with delimiter = ',';
-COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData7.txt' with delimiter = ',';
+-- COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData6.txt' with delimiter = ',';
+-- COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData7.txt' with delimiter = ',';
+-- COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData8.txt' with delimiter = ',';
+-- COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData9.txt' with delimiter = ',';
+-- COPY rides from '/Users/rngo/Desktop/HackReactor/hrsf86-thesis/fakeData/fakeData10.txt' with delimiter = ',';
