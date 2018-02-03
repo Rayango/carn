@@ -4,6 +4,7 @@ const uuid = require('uuid/v1');
 const app = require('../server/index.js');
 const supertest = require('supertest');
 const db = require('../database-cassandra/index.js');
+const moment = require('moment');
 
 const request = supertest.agent(app.listen());
 
@@ -19,12 +20,14 @@ describe('server', function() {
   });
 
   it('should insert requests to the DB', function(done) {
+    let timestamp = new Date(new Date() - (Math.random() * 8.64e7)).toISOString().split('.')[0]+"-0800";
     let data = {
       id: uuid(),
       rate: 2.65, 
       zipOrigin: 94105,
       zipDestination: 94122,
-      timestamp: new Date(new Date() - (Math.random() * 8.64e7)).toISOString().split('.')[0]+"-0800",
+      timestamp: timestamp,
+      timeBucket: moment(timestamp).format('MMMM Do YYYY h a'),
       price: 6.85,
       ride: false
     };
@@ -33,12 +36,11 @@ describe('server', function() {
       .post('/requests')
       .send(data)
       .end((err, res) => {
-        db.lookupRequest(data, data.ride ? 'rides' : 'views', (error, result) => {
+        db.lookupRequest(data, 'views', (error, result) => {
           if (error) {
             console.log(error);
           } else {
-            console.log('result...', result);
-            assert.equal(result.columns.length, 1);
+            assert.equal(result.length, 1);
           }
         });
         done();
@@ -49,8 +51,7 @@ describe('server', function() {
     request
       .get('/dataForFares')
       .end((err, res) => {
-        console.log('data...', res.body.data);
-        assert.equal(res.body.data, 'Hello Koa!');
+        assert.isAtLeast(Object.keys(res.body.data).length, 1);
         done();
       });
   });

@@ -2,21 +2,24 @@ config:
   target: 'http://127.0.0.1:3000'
   phases:
     - duration: 60
-      arrivalRate: 1000
+      arrivalRate: 10
   processor: './fakeData/artilleryFakeDataGenerator.js'    
 scenarios:
   - name: 'Add a request'
     flow:
       - function: 'generateFakeData'
-      - post:
-          url: "/requests"
-          json:
-            id: '{{ id }}'
-            rate: '{{ rate }}'
-            zipOrigin: '{{ zipOrigin }}'
-            zipDestination: '{{ zipDestination }}'
-            timestamp: '{{ timestamp }}'
-            price: '{{ price }}'
-            ride: '{{ ride }}'
-      - log: "Sent a request to /requests with {{ zipOrigin }}, {{ timestamp }}, {{ id }}"      
+      - loop:
+        - post:
+            url: "/requests"
+            json:
+              timeBucket: '{{ timeBucket }}'
+              id: '{{ id }}'
+              rate: '{{ rate }}'
+              zipOrigin: '{{ zipOrigin }}'
+              zipDestination: '{{ zipDestination }}'
+              timestamp: '{{ timestamp }}'
+              price: '{{ price }}'
+              ride: '{{ ride }}'
+        # - log: "Sent a request to /requests with {{ zipOrigin }}, {{ timestamp }}, {{ id }}" 
+        count: 50       
 

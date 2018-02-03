@@ -5,7 +5,7 @@ const fs = require('fs');
 const bodyParser = require('koa-body');
 const generateFakeData = require('../fakeData/fakeDataGenerator.js');
 const db = require('../database-cassandra/index.js');
-
+const zipCodes = Object.keys(require('../fakeData/sfZipCodes.js'));
 
 const app = new Koa();
 const router = new Router();
@@ -33,26 +33,32 @@ router
     }; 
   })
   .post('/requests', bodyParser(), async (ctx, next) => {
-    const dbResponse = await db.addRequest(ctx.request.body);
+    let dbResponse = await db.addRequest(ctx.request.body);
     ctx.body = {
       data: 'request has been added to DB!'
     };
-    // db.addRequest(ctx.request.body, (error, result) => {
-    //   if (error) {
-    //     console.log(error);
-    //   } else {
-    //     ctx.body = {
-    //       data: 'request has been added to DB!'
-    //     };
-    //     console.log('request has been added to DB!');
-    //   }
-    // });
   })
   .get('/dataForFares', async (ctx, next) => {
-    const historicalFareData = await db.getZipCodeData();
-    console.log('historicalFareData....', historicalFareData);
+    let historicalFareData = await db.getZipCodeData();
+    let dataForFares = {};
+    for (let zipCode of zipCodes) {
+      dataForFares[zipCode] = {
+        views: 0,
+        rides: 0
+      };
+    }
+    for (let ride of historicalFareData.rides) {
+      if (dataForFares[ride.ziporigin]) {
+        dataForFares[ride.ziporigin].rides++;
+      }
+    }
+    for (let view of historicalFareData.views) {
+      if (dataForFares[view.ziporigin]) {
+        dataForFares[view.ziporigin].views++;
+      }
+    }
     ctx.body = {
-      data: historicalFareData
+      data: dataForFares
     };
   });
 

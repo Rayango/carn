@@ -6,46 +6,44 @@ const client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'e
 console.log('connecting database....');
 
 module.exports = {
-  // getAllViews: (callback) => {
-  //   client.execute(`SELECT * FROM views`)
-  //     .then(result => callback(null, result))
-  //     .catch(error => callback(error, null));
-  // },
-  addRequest: (request, callback) => {
+  addRequest: (request) => {
     // let id = uuid();
     let table = request.ride ? 'rides' : 'views';
-    let query = `INSERT INTO ${table} (id, rate, zipOrigin, zipDestination, time_stamp, price) VALUES (?, ?, ?, ?, ?, ?)`;
-    let params = [request.id, request.rate, request.zipOrigin, request.zipDestination, request.timestamp, request.price];
-    // client.execute(query, params, {prepare: true})
-    //   .then(result => callback(null, result))
-    //   .catch(error => callback(error, null));
-    return client.execute(query, params, {prepare: true});
+    let query = `INSERT INTO ${table} (timeBucket, id, rate, zipOrigin, zipDestination, time_stamp, price) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    let params = [request.timeBucket, request.id, request.rate, request.zipOrigin, request.zipDestination, request.timestamp, request.price];
+    return client.execute(query, params, {prepare: true})
   },
   lookupRequest: (data, table, callback) => {
-    let query = `SELECT * FROM ${table} WHERE zipOrigin = ${data.zipOrigin} AND timestamp = ${data.timestamp} AND id = ${data.id}`;
-    return client.execute(query, {prepare: true})
+    let query = `SELECT * FROM ${table} WHERE timeBucket = ? AND time_stamp = ? AND zipOrigin = ? AND rate = ? AND id = ?`;
+    let params = [data.timeBucket, data.timestamp, data.zipOrigin, data.rate, data.id];
+    client.execute(query, params, {prepare: true})
       .then(result => {
-        return result.rows;
+        callback(null, result.rows);
       })
-      .catch(error => console.log('error....', error));
+      .catch(error => callback(error, null));
   },
   getZipCodeData: () => {
     console.log('getting zip code data....');
     let data = {};
-    let endTime = moment().format();
-    let startTime = moment(endTime).subtract(1, 'minutes').format();
-    return moment(endTime).format('MMMM Do YYYY, h')
-    let queries = [];
-    let queryTemplate = `SELECT * from rides WHERE zipOrigin = ? AND time_stamp > ? AND time_stamp < ?`;
-    for (let zipCode of zipCodes) {
-      queries.push( {query: queryTemplate, params: [zipCode, startTime, endTime]} );
-    }
-    console.log('queries.....', queries);
-    return client.batch(queries, {prepare: true})
-      .then(result => {
-        console.log('result........', result)
-        return result.rows;
+    // let endTime = moment().format();
+    // let startTime = moment(endTime).subtract(1, 'minutes').format();
+    // let timeBucket = moment(startTime).format('MMMM Do YYYY h a');
+    let startTime = '2018-02-02T15:25:31-0800,94133';
+    let endTime = '2018-02-02T15:26:31-0800,94133';
+    let timeBucket = 'February 2nd 2018 3 pm';
+    let params = [timeBucket, startTime, endTime];
+    let ridesQuery = `SELECT * from rides WHERE timeBucket = ? AND time_stamp > ? AND time_stamp < ?`;
+    let viewsQuery = `SELECT count(*) from views WHERE timeBucket = ? AND time_stamp > ? AND time_stamp < ?`;
+    return client.execute(ridesQuery, params, {prepare: true})
+      .then(ridesResult => {
+        return client.execute(viewsQuery, params, {prepare: true})
+          .then(viewsResult => {
+            return {
+              rides: ridesResult.rows,
+              views: viewsResult.rows
+            };
+          })
       })
-      .catch(error => console.log('error....', error))
+      .catch(error => console.log('error in selecting count from rides...', error))
   }
 };
