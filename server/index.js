@@ -1,4 +1,5 @@
 require('newrelic');
+const AWS = require('aws-sdk');
 const Koa = require('koa');
 const Router = require('koa-router');
 const fs = require('fs');
@@ -9,6 +10,7 @@ const zipCodes = Object.keys(require('../fakeData/sfZipCodes.js'));
 
 const app = new Koa();
 const router = new Router();
+AWS.config.update({region: 'us-west-2'});
 
 var port = process.env.PORT || (process.argv[2] || 3000);
 port = (typeof port === "number") ? port : 3000;
