@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Rayango/hrsf86-thesis#readme",
   "dependencies": {
+    "aws-sdk": "^2.188.0",
     "cassandra-driver": "^3.3.0",
     "faker": "^4.1.0",
     "fs": "0.0.1-security",
