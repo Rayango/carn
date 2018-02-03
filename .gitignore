@@ -3,7 +3,6 @@ config/development.json
 config/production.json
 config/staging.json
 config/test.json
-/fakeData/*.txt
 
 # OS X
 .DS_Store
@@ -37,21 +36,7 @@ dist/
 node_modules/
 bower_components/
 
+fakeData/
 newrelic.js
-artilleryFakeDataGenerator.js
-fakeData1.txt
-fakeData2.txt
-fakeData3.txt
-fakeData4.txt
-fakeData5.txt
-fakeData6.txt
-fakeData7.txt
-fakeData8.txt
-fakeData9.txt
-fakeData10.txt
-fakeData11.txt
-fakeDataGenerator.js
-sfZipCodes.js
-usZipCodes.js
 testing.yml
 config-sample.json
