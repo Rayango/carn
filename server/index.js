@@ -11,7 +11,32 @@ const zipCodes = Object.keys(require('../fakeData/sfZipCodes.js'));
 
 const app = new Koa();
 const router = new Router();
+
 AWS.config.loadFromPath('./config-sample.json');
+let sqs = new AWS.SQS({apiVersion: '2012-11-05'});
+let params = {
+  QueueName: 'SQS_QUEUE_NAME',
+  Attributes: {
+    'DelaySeconds': '60',
+    'MessageRetentionPeriod': '86400'
+  }
+};
+
+sqs.createQueue(params, function(err, data) {
+  if (err) {
+    console.log("Error", err);
+  } else {
+    console.log("Success", data.QueueUrl);
+  }
+});
+
+// sqs.listQueues(params, function(err, data) {
+//   if (err) {
+//     console.log("Error", err);
+//   } else {
+//     console.log("Success", data.QueueUrls);
+//   }
+// });
 
 var port = process.env.PORT || (process.argv[2] || 3000);
 port = (typeof port === "number") ? port : 3000;
