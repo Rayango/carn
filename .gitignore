@@ -36,7 +36,7 @@ dist/
 node_modules/
 bower_components/
 
-fakeData/
+testData/
 newrelic.js
 testing.yml
 config-sample.json

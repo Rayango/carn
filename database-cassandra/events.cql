@@ -14,7 +14,7 @@ CREATE TABLE views (
   zipDestination int,
   time_stamp text,
   PRIMARY KEY (timeBucket, time_stamp, zipOrigin, rate, id)
-);
+); 
 
 
 CREATE TABLE rides (
@@ -28,7 +28,7 @@ CREATE TABLE rides (
   PRIMARY KEY (timeBucket, time_stamp, zipOrigin, rate, id)
 );
 
--- -- // step 8 135 ms with 10M to select all entries for a given minute
+-- -- // step 8 179ms ms with 10M to select all entries for a given minute
 -- CREATE TABLE views (
 --   id uuid,
 --   timeBucket text,

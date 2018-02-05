@@ -5,9 +5,9 @@ const Koa = require('koa');
 const Router = require('koa-router');
 const fs = require('fs');
 const bodyParser = require('koa-body');
-const generateFakeData = require('../fakeData/fakeDataGenerator.js');
+const generateFakeData = require('../testData/fakeDataGenerator.js');
 const db = require('../database-cassandra/index.js');
-const zipCodes = Object.keys(require('../fakeData/sfZipCodes.js'));
+const zipCodes = Object.keys(require('../testData/sfZipCodes.js'));
 
 const app = new Koa();
 const router = new Router();
