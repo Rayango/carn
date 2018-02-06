@@ -28,6 +28,7 @@
     "moment": "^2.20.1",
     "newrelic": "^2.6.1",
     "nodemon": "^1.14.11",
+    "sqs-consumer": "^3.8.0",
     "uuid": "^3.2.1"
   },
   "devDependencies": {

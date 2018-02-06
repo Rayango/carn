@@ -3,19 +3,18 @@ const moment = require('moment');
 const zipCodes = Object.keys(require('../testData/sfZipCodes.js'));
 const uuid = require('uuid/v1');
 const client = new cassandra.Client({ contactPoints: ['127.0.0.1'], keyspace: 'events' });
-console.log('connecting database....');
 
 module.exports = {
   addRequest: (request) => {
     // let id = uuid();
     let table = request.ride ? 'rides' : 'views';
-    let query = `INSERT INTO ${table} (timeBucket, id, rate, zipOrigin, zipDestination, time_stamp, price) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-    let params = [request.timeBucket, request.id, request.rate, request.zipOrigin, request.zipDestination, request.timestamp, request.price];
-    return client.execute(query, params, {prepare: true})
+    let query = `INSERT INTO ${table} (hourBucket, minuteBucket, id, rate, zipOrigin, zipDestination, time_stamp, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
+    let params = [request.hourBucket, request.minuteBucket, request.id, request.rate, request.zipOrigin, request.zipDestination, request.timestamp, request.price];
+    return client.execute(query, params, {prepare: true});
   },
   lookupRequest: (data, table, callback) => {
-    let query = `SELECT * FROM ${table} WHERE timeBucket = ? AND time_stamp = ? AND zipOrigin = ? AND rate = ? AND id = ?`;
-    let params = [data.timeBucket, data.timestamp, data.zipOrigin, data.rate, data.id];
+    let query = `SELECT * FROM ${table} WHERE hourBucket = ? AND minuteBucket = ?`;
+    let params = [data.hourBucket, data.minuteBucket];
     client.execute(query, params, {prepare: true})
       .then(result => {
         callback(null, result.rows);
@@ -23,17 +22,15 @@ module.exports = {
       .catch(error => callback(error, null));
   },
   getZipCodeData: () => {
-    console.log('getting zip code data....');
     let data = {};
     // let endTime = moment().format();
     // let startTime = moment(endTime).subtract(1, 'minutes').format();
     // let timeBucket = moment(startTime).format('MMMM Do YYYY h a');
-    let startTime = '2018-02-02T15:25:31-0800';
-    let endTime = '2018-02-02T15:26:31-0800';
-    let timeBucket = 'February 2nd 2018 3 pm';
-    let params = [timeBucket, startTime, endTime];
-    let ridesQuery = `SELECT * from rides WHERE timeBucket = ? AND time_stamp > ? AND time_stamp < ?`;
-    let viewsQuery = `SELECT * from views WHERE timeBucket = ? AND time_stamp > ? AND time_stamp < ?`;
+    let hourBucket = 'February 5th 2018 2 pm';
+    let minuteBucket = 'February 5th 2018 2:32 pm';
+    let params = [hourBucket, minuteBucket];
+    let ridesQuery = `SELECT * from rides WHERE hourBucket = ? AND minuteBucket = ?`;
+    let viewsQuery = `SELECT * from views WHERE hourBucket = ? AND minuteBucket = ?`;
     return client.execute(ridesQuery, params, {prepare: true})
       .then(ridesResult => {
         return client.execute(viewsQuery, params, {prepare: true})
