@@ -9,15 +9,15 @@ const moment = require('moment');
 const request = supertest.agent(app.listen());
 
 describe('server', function() {
-
-  // it('should return a greeting when the index page is visited', function(done) {
-  //   request
-  //     .get('/')
-  //     .end((err, res) => {
-  //       assert.equal(res.body.data, 'Hello Koa!');
-  //       done();
-  //     });
-  // });
+  it('should respond with a greeting when the index page is visited', (done) => {
+    request
+      .get('/')
+      .expect(200)
+      .end((err, res) => {
+        assert.equal(res.body.data, 'Hello Koa!');
+        done();
+      });
+  }); 
 
   it('should insert requests to the DB', function(done) {
     let timestamp = new Date(new Date() - (Math.random() * 8.64e7)).toISOString().split('.')[0]+"-0800";
@@ -36,25 +36,20 @@ describe('server', function() {
     request
       .post('/requests')
       .send(data)
+      .expect(201)
       .end((err, res) => {
-        db.lookupRequest(data, 'views', (error, result) => {
-          if (error) {
-            console.log(error);
-          } else {
-            assert.equal(result.length, 1);
-          }
-        });
         done();
       });  
   });
 
-  // it('should return aggregated data when dataForFares endpoint is visited', function(done) {
-  //   request
-  //     .get('/dataForFares')
-  //     .end((err, res) => {
-  //       console.log(res.body.data);
-  //       assert.isAtLeast(Object.keys(res.body.data).length, 1);
-  //       done();
-  //     });
-  // });
+  it('should return aggregated data when dataForFares endpoint is visited', function(done) {
+    request
+      .get('/dataForFares')
+      .expect(200)
+      .end((err, res) => {
+        console.log(res.body.data.length);
+        assert.equal(Object.keys(res.body.data).length, 27);
+        done();
+      });
+  });
 });

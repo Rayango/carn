@@ -40,3 +40,4 @@ testData/
 newrelic.js
 testing.yml
 config-sample.json
+process.env

@@ -15,8 +15,10 @@ module.exports = {
   lookupRequest: (data, table, callback) => {
     let query = `SELECT * FROM ${table} WHERE hourBucket = ? AND minuteBucket = ?`;
     let params = [data.hourBucket, data.minuteBucket];
+    console.log('params in lookupRequest....', params);
     client.execute(query, params, {prepare: true})
       .then(result => {
+        console.log('result...', result);
         callback(null, result.rows);
       })
       .catch(error => callback(error, null));
@@ -26,8 +28,8 @@ module.exports = {
     // let endTime = moment().format();
     // let startTime = moment(endTime).subtract(1, 'minutes').format();
     // let timeBucket = moment(startTime).format('MMMM Do YYYY h a');
-    let hourBucket = 'February 5th 2018 2 pm';
-    let minuteBucket = 'February 5th 2018 2:32 pm';
+    let hourBucket = 'February 5th 2018 11 pm';
+    let minuteBucket = 'February 5th 2018 11:09 pm';
     let params = [hourBucket, minuteBucket];
     let ridesQuery = `SELECT * from rides WHERE hourBucket = ? AND minuteBucket = ?`;
     let viewsQuery = `SELECT * from views WHERE hourBucket = ? AND minuteBucket = ?`;

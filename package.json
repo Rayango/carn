@@ -19,7 +19,9 @@
   "homepage": "https://github.com/Rayango/hrsf86-thesis#readme",
   "dependencies": {
     "aws-sdk": "^2.188.0",
+    "aws-sqs-consumer": "^2.0.1",
     "cassandra-driver": "^3.3.0",
+    "dotenv": "^5.0.0",
     "faker": "^4.1.0",
     "fs": "0.0.1-security",
     "koa": "^2.4.1",
@@ -29,6 +31,7 @@
     "newrelic": "^2.6.1",
     "nodemon": "^1.14.11",
     "sqs-consumer": "^3.8.0",
+    "sqs-queue-parallel": "^0.1.6",
     "uuid": "^3.2.1"
   },
   "devDependencies": {

@@ -4,7 +4,33 @@ CREATE KEYSPACE events WITH REPLICATION = {'class': 'SimpleStrategy', 'replicati
 
 USE events;
 
--- step 10 ms with 10M to select all entries for a given minute
+-- step 11 73 ms with 10M to select all entries for a given minute
+-- CREATE TABLE views (
+--   id uuid,
+--   hourBucket text,
+--   minuteBucket text,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY (hourBucket, minuteBucket, zipOrigin, rate, time_stamp, id)
+-- ); 
+
+
+-- CREATE TABLE rides (
+--   id uuid,
+--   hourBucket text,
+--   minuteBucket text,
+--   rate decimal,
+--   price decimal,
+--   zipOrigin int,
+--   zipDestination int,
+--   time_stamp text,
+--   PRIMARY KEY (hourBucket, minuteBucket, zipOrigin, rate, time_stamp, id)
+-- );
+
+-- -- step 10 96 ms with 10M to select all entries for a given minute
 CREATE TABLE views (
   id uuid,
   hourBucket text,
@@ -28,6 +54,26 @@ CREATE TABLE rides (
   zipDestination int,
   time_stamp text,
   PRIMARY KEY ((hourBucket, minuteBucket), zipOrigin, rate, time_stamp, id)
+);
+
+CREATE TABLE viewsByRate (
+  id uuid,
+  rateBucket decimal,
+  price decimal,
+  zipOrigin int,
+  zipDestination int,
+  time_stamp text,
+  PRIMARY KEY (rateBucket, id)
+); 
+
+CREATE TABLE ridesByRate (
+  id uuid,
+  rateBucket decimal,
+  price decimal,
+  zipOrigin int,
+  zipDestination int,
+  time_stamp text,
+  PRIMARY KEY (rateBucket, id)
 );
 
 -- step 9 71 ms with 10M to select all entries for a given minute
