@@ -22,88 +22,9 @@ app
 
 
 AWS.config.loadFromPath('./config-sample.json');
-// AWS.config.update({region: 'us-west-1'});
 const sqs = new AWS.SQS({apiVersion: '2012-11-05'});
-// const Consumer = require('sqs-consumer');
-// const SqsQueueParallel = require('sqs-queue-parallel');
-
-var params = {
-  QueueName: 'events',
-  Attributes: {
-    'DelaySeconds': '0',
-    'MessageRetentionPeriod': '86400'
-  }
-};
-
-sqs.createQueue(params, function(err, data) {
-  if (err) {
-    console.log("Error", err);
-  } else {
-    console.log("Success", data.QueueUrl);
-  }
-});
 
 consumers.createConsumers();
-
-// const inbox = Consumer.create({
-//   queueUrl: 'https://sqs.us-west-1.amazonaws.com/135132304111/events',
-//   batchSize: 10,
-//   handleMessage: (message, done) => {
-//     db.addRequest(JSON.parse(message.Body));
-//     done();
-//   }
-// });
-
-// inbox.on('error', (err) => {
-//   console.log(err.message);
-// });
-
-// inbox.start();
-
-// const inboxTwo = Consumer.create({
-//   queueUrl: 'https://sqs.us-west-1.amazonaws.com/135132304111/events',
-//   batchSize: 10,
-//   handleMessage: (message, done) => {
-//     db.addRequest(JSON.parse(message.Body));
-//     done();
-//   }
-// });
-
-// inboxTwo.on('error', (err) => {
-//   console.log(err.message);
-// });
-
-// inboxTwo.start();
-
-// const inboxThree = Consumer.create({
-//   queueUrl: 'https://sqs.us-west-1.amazonaws.com/135132304111/events',
-//   batchSize: 10,
-//   handleMessage: (message, done) => {
-//     db.addRequest(JSON.parse(message.Body));
-//     done();
-//   }
-// });
-
-// inboxThree.on('error', (err) => {
-//   console.log(err.message);
-// });
-
-// inboxThree.start();
-
-// const inboxFour = Consumer.create({
-//   queueUrl: 'https://sqs.us-west-1.amazonaws.com/135132304111/events',
-//   batchSize: 10,
-//   handleMessage: (message, done) => {
-//     db.addRequest(JSON.parse(message.Body));
-//     done();
-//   }
-// });
-
-// inboxFour.on('error', (err) => {
-//   console.log(err.message);
-// });
-
-// inboxFour.start();
 
 router
   .get('/', (ctx, next) => {
@@ -141,30 +62,15 @@ router
   })
   .get('/dataForFares', async (ctx, next) => {
     try {
-      let historicalFareData = await db.getZipCodeData();
-      let dataForFares = {};
-      for (let zipCode of zipCodes) {
-        dataForFares[zipCode] = {
-          views: 0,
-          rides: 0
-        };
-      }
-      for (let ride of historicalFareData.rides) {
-        // if (dataForFares[ride.ziporigin]) {
-          dataForFares[ride.ziporigin].rides++;
-        // }
-      }
-      for (let view of historicalFareData.views) {
-        // if (dataForFares[view.ziporigin]) {
-          dataForFares[view.ziporigin].views++;
-        // }
-      }
+      let historicalFareData = await Promise.all(zipCodes.map((zipCode) => db.getZipCodeData(zipCode)));
       ctx.status = 200;
+      console.log(ctx.body);
       ctx.body = {
-        data: dataForFares
+        data: historicalFareData
       };
     }
     catch (err) {
+      console.log(err);
       ctx.status = 404;
       ctx.body = err;
     }
@@ -174,7 +80,7 @@ router
 
 if (!module.parent) { 
   app.listen(port, function() {
-    console.log(`listening on port ${port}`);
+    console.log(`listening in on port ${port}`);
   })
 }
 
