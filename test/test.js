@@ -19,7 +19,7 @@ describe('server', function() {
       });
   }); 
 
-  it('should insert requests to the DB', function(done) {
+  it('should have a route called /requests to take requests from the Passengers API', function(done) {
     let timestamp = new Date(new Date() - (Math.random() * 8.64e7)).toISOString().split('.')[0]+"-0800";
     let data = {
       id: uuid(),
@@ -27,8 +27,8 @@ describe('server', function() {
       zipOrigin: 94105,
       zipDestination: 94122,
       timestamp: timestamp,
-      hourBucket: moment(timestamp).format('MMMM Do YYYY h a'),
-      minuteBucket: moment(timestamp).format('MMMM Do YYYY h:mm a'),
+      // hourBucket: moment(timestamp).format('MMMM Do YYYY h a'),
+      // minuteBucket: moment(timestamp).format('MMMM Do YYYY h:mm a'),
       price: 6.85,
       ride: false
     };
@@ -36,7 +36,6 @@ describe('server', function() {
     request
       .post('/requests')
       .send(data)
-      // .expect(201)
       .end((err, res) => {
         done();
       });  
@@ -47,8 +46,11 @@ describe('server', function() {
       .get('/dataForFares')
       .expect(200)
       .end((err, res) => {
-        console.log('res.body.length', res.body.length);
-        assert.equal(res.body.length, 27);
+        assert.equal(res.body.data.length, 27);
+        console.log(res.body.data);
+        for (let zipCodeData of res.body.data) {
+          assert.isNumber(+zipCodeData.rides);
+        }
         done();
       });
   });

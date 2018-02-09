@@ -20,7 +20,6 @@ app
   .use(router.routes())
   .use(router.allowedMethods());
 
-
 AWS.config.loadFromPath('./config-sample.json');
 const sqs = new AWS.SQS({apiVersion: '2012-11-05'});
 
@@ -29,14 +28,14 @@ consumers.createConsumers();
 router
   .get('/', (ctx, next) => {
     try { 
-      // ctx.status = 200;
+      ctx.status = 200;
       ctx.body = {
         data: 'Hello Koa!'
       }; 
     }
     catch (err) {
-      ctx.status = 404;
-      ctx.body = err;
+      ctx.status = err.status || 500;
+      ctx.body = err.message;
     }  
   })
   .post('/requests', bodyParser(), async (ctx, next) => {
@@ -54,10 +53,13 @@ router
           console.log('message sent!', messageData);
         }
       });
+      // await db.addRequest(ctx.request.body);
+      ctx.status = 200;
+      ctx.body = {message: 'message received'};
     }
     catch (err) {
-      ctx.status = 404;
-      ctx.body = err;
+      ctx.status = err.status || 500;
+      ctx.body = err.message;
     }  
   })
   .get('/dataForFares', async (ctx, next) => {
@@ -70,13 +72,10 @@ router
       };
     }
     catch (err) {
-      console.log(err);
-      ctx.status = 404;
-      ctx.body = err;
+      ctx.status = err.status || 500;
+      ctx.body = err.message;
     }
   });
-
-// var server = app.listen(port);
 
 if (!module.parent) { 
   app.listen(port, function() {

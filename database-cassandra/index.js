@@ -8,29 +8,33 @@ module.exports = {
   addRequest: (request) => {
     // let id = uuid();
     let table = request.ride ? 'rides' : 'views';
-    let query = `INSERT INTO ${table} (hourBucket, minuteBucket, id, rate, zipOrigin, zipDestination, time_stamp, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`;
-    let params = [request.hourBucket, request.minuteBucket, request.id, request.rate, request.zipOrigin, request.zipDestination, request.timestamp, request.price];
+    let query = `INSERT INTO ${table} (id, rate, zipOrigin, zipDestination, time_stamp, price) VALUES (?, ?, ?, ?, ?, ?)`;
+    let params = [request.id, request.rate, request.zipOrigin, request.zipDestination, request.timestamp, request.price];
     return client.execute(query, params, {prepare: true})
       .then(result => {
-        return result.rows;
+        // console.log('request added');
+        return 'request added';
       })
       .catch(error => console.log(error));
   },
   getZipCodeData: (zipCode) => {
     // let endTime = moment().format();
     // let startTime = moment(endTime).subtract(1, 'minutes').format();
+    let endTime = '2018-02-08T22:28:34-0800';
+    let startTime = moment(endTime).subtract(1, 'minutes').format();
     // let timeBucket = moment(startTime).format('MMMM Do YYYY h a');
-    let hourBucket = 'February 5th 2018 11 pm';
-    let minuteBucket = 'February 5th 2018 11:09 pm';
-    let params = [hourBucket, minuteBucket];
-    let ridesQuery = `SELECT count(*) from rides WHERE hourBucket = ? AND minuteBucket = ? AND zipOrigin = ${zipCode}`;
-    let viewsQuery = `SELECT count(*) from views WHERE hourBucket = ? AND minuteBucket = ? AND zipOrigin = ${zipCode}`;
+    // let hourBucket = 'February 5th 2018 11 pm';
+    // let minuteBucket = 'February 5th 2018 11:09 pm';
+    let params = [startTime, endTime];
+    let ridesQuery = `SELECT count(*) from rides WHERE zipOrigin = ${zipCode} AND time_stamp >= ? AND time_stamp < ?`;
+    let viewsQuery = `SELECT count(*) from views WHERE zipOrigin = ${zipCode} AND time_stamp >= ? AND time_stamp < ?`;
+    // let ridesQuery = `SELECT count(*) from rides WHERE hourBucket = ? AND minuteBucket = ? AND zipOrigin = ${zipCode}`;
+    // let viewsQuery = `SELECT count(*) from views WHERE hourBucket = ? AND minuteBucket = ? AND zipOrigin = ${zipCode}`;
 
     return client.execute(ridesQuery, params, {prepare: true})
       .then(ridesResult => {
         return client.execute(viewsQuery, params, {prepare: true})
           .then(viewsResult => {
-            console.log('ridesResult...', ridesResult);
             return {
               zipOrigin: zipCode,
               rides: ridesResult.rows[0]['count'],
@@ -39,16 +43,5 @@ module.exports = {
           })
       })
       .catch(error => console.log('error in selecting count from rides...', error))
-  }, 
-  // lookup request is for testing purposes
-  lookupRequest: (data, table, callback) => {
-    let query = `SELECT * FROM ${table} WHERE hourBucket = ? AND minuteBucket = ?`;
-    let params = [data.hourBucket, data.minuteBucket];
-    console.log('params in lookupRequest....', params);
-    client.execute(query, params, {prepare: true})
-      .then(result => {
-        return result.rows;
-      })
-      .catch(error => console.log(error));
   }
 };
