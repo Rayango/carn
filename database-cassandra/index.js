@@ -12,7 +12,6 @@ module.exports = {
     let params = [request.id, request.rate, request.zipOrigin, request.zipDestination, request.timestamp, request.price];
     return client.execute(query, params, {prepare: true})
       .then(result => {
-        // console.log('request added');
         return 'request added';
       })
       .catch(error => console.log(error));
