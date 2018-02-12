@@ -50,11 +50,11 @@ router
         if (err) {
           console.log('error in sending message', err);
         } else {
-          console.log('message sent!', messageData);
+          // console.log('message sent!', messageData);
         }
       });
       // await db.addRequest(ctx.request.body);
-      ctx.status = 200;
+      ctx.status = 202;
       ctx.body = {message: 'message received'};
     }
     catch (err) {
@@ -66,7 +66,6 @@ router
     try {
       let historicalFareData = await Promise.all(zipCodes.map((zipCode) => db.getZipCodeData(zipCode)));
       ctx.status = 200;
-      console.log(ctx.body);
       ctx.body = {
         data: historicalFareData
       };
