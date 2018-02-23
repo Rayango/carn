@@ -1,5 +1,4 @@
 require('newrelic');
-// require('dotenv').config()
 const AWS = require('aws-sdk');
 const Koa = require('koa');
 const Router = require('koa-router');
@@ -50,10 +49,9 @@ router
         if (err) {
           console.log('error in sending message', err);
         } else {
-          // console.log('message sent!', messageData);
+          console.log('message sent!', messageData);
         }
       });
-      // await db.addRequest(ctx.request.body);
       ctx.status = 202;
       ctx.body = {message: 'message received'};
     }
@@ -64,7 +62,9 @@ router
   })
   .get('/dataForFares', async (ctx, next) => {
     try {
+      var t0 = new Date();
       let historicalFareData = await Promise.all(zipCodes.map((zipCode) => db.getZipCodeData(zipCode)));
+      console.log(new Date() - t0 + 'ms');
       ctx.status = 200;
       ctx.body = {
         data: historicalFareData

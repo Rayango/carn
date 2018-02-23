@@ -28,8 +28,6 @@ describe('server', function() {
       zipOrigin: 94105,
       zipDestination: 94122,
       timestamp: timestamp,
-      // hourBucket: moment(timestamp).format('MMMM Do YYYY h a'),
-      // minuteBucket: moment(timestamp).format('MMMM Do YYYY h:mm a'),
       price: 6.85,
       ride: false
     };
