@@ -4,7 +4,7 @@
 
 ### Service's Inputs and Outputs
 The Events service is responsible for collecting data about all views and rides that occur.   After a user makes a ride request and receives a fare estimate, the user has the option of accepting or declining the ride.  Upon the user making a decision, that data is sent to the Events service, into an Amazon SQS queue instance, as JSON data in the following format:
-
+```
 {
   "id": "cbfa0b50-11d8-11e8-8355-d962b72a7d1f",
   “rate”: 5,
@@ -14,7 +14,7 @@ The Events service is responsible for collecting data about all views and rides 
   “time”: "2018-02-08T22:28:34-0800",
   “ride”: true / false
 }
-
+```
 With the data received from the Passengers Service, the Events service will have an offline process to aggregate information about surge pricing.  Also, at minute intervals, Events will send request and cancellation data to the Fares service; this data will be based on the past minute for each zip code.  Utilizing this data, Fares can adjust the surge price as needed, based on current user demand and driver supply.
 
 The Events service’s ultimate job is to aggregate data on views / rides, that is to be used to answer our business question of whether there is a correlation between surge pricing and conversion from user views to ride booking.  This will be determined by finding the Pearson’s Correlation Coefficient of those two variables to determine the strength and nature (i.e. positive, negative) of the relationship.
