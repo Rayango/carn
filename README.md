@@ -1,6 +1,7 @@
 # Car'N
 
 ## Information
+This is information about the Events microservice for Car'N.
 
 ### Service's Inputs and Outputs
 The Events service is responsible for collecting data about all views and rides that occur.   After a user makes a ride request and receives a fare estimate, the user has the option of accepting or declining the ride.  Upon the user making a decision, that data is sent to the Events service, into an Amazon SQS queue instance, as JSON data in the following format:
